@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Président 2000</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Bureau rétro : fenêtres en relief sur fond sarcelle tramé, écran cathodique pour les sondages. Un seul thème, par choix. */
+  --desk:#56797a; --desk2:#4d6e6f;
+  --face:#cfcabb; --hi:#f6f3e8; --lo:#868271; --ink:#1d1c19; --ink2:#4a483f; --paper:#e9e5d7;
+  --bar:#27375f; --bar2:#5b6ea3; --red:#a3423c; --green:#3a6b42; --gold:#c9a13a;
+  --crt:#0e1712; --crt-grid:#1e3a2a; --crt-txt:#9fe2a8;
+  --f-display:'Pixelify Sans','Trebuchet MS',Verdana,sans-serif;
+  --f-body:Tahoma,Verdana,'DejaVu Sans',sans-serif;
+  --f-crt:'VT323','Courier New',monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background-color:var(--desk);background-image:repeating-conic-gradient(var(--desk2) 0 25%,transparent 0 50%);background-size:4px 4px;color:var(--ink);font:14px/1.45 var(--f-body);-webkit-text-size-adjust:100%}
+button{font-family:inherit;color:inherit}
+h1,h2,h3,p,ul{margin:0}
+ul{padding:0;list-style:none}
+#app{max-width:1340px;margin:0 auto;padding:10px 16px 28px;display:flex;flex-direction:column;gap:10px;min-height:100%}
+
+.win{background:var(--face);border:2px solid;border-color:var(--hi) var(--ink2) var(--ink2) var(--hi);box-shadow:inset -2px -2px 0 var(--lo),inset 2px 2px 0 #e6e2d4,3px 3px 0 rgba(0,0,0,.28);padding:4px;min-width:0}
+.tb{background:linear-gradient(90deg,var(--bar),var(--bar2));color:#fff;font:600 15px/1.1 var(--f-display);letter-spacing:.04em;padding:6px 8px;display:flex;align-items:center;gap:8px}
+.tb::before{content:"";width:18px;height:12px;background:linear-gradient(90deg,#3b55a0 0 33.3%,#f4f1e6 0 66.6%,#b5463f 0);border:1px solid #111;flex:none}
+.tb.alert{background:linear-gradient(90deg,#6e1f1c,var(--red))}
+.wb{padding:10px;display:flex;flex-direction:column;gap:10px}
+.btn{font:600 14px/1.2 var(--f-body);background:var(--face);border:2px solid;border-color:var(--hi) var(--ink) var(--ink) var(--hi);box-shadow:inset -1px -1px 0 var(--lo),inset 1px 1px 0 #fff;padding:8px 14px;min-height:40px;cursor:pointer}
+.btn:active:not(:disabled),.act:active:not(:disabled){border-color:var(--ink) var(--hi) var(--hi) var(--ink);box-shadow:inset 1px 1px 0 var(--lo);transform:translate(1px,1px)}
+.btn:disabled{color:var(--lo);text-shadow:1px 1px 0 var(--hi);cursor:default}
+.btn:focus-visible,.act:focus-visible,.chip:focus-visible,.tabs button:focus-visible{outline:2px dotted var(--ink);outline-offset:-5px}
+.btn.go{background:#d9d2a8}
+.inset{background:var(--paper);border:2px solid;border-color:var(--lo) var(--hi) var(--hi) var(--lo);box-shadow:inset 1px 1px 0 var(--ink2)}
+.crt{background:var(--crt);color:var(--crt-txt);font-family:var(--f-crt);border:2px solid;border-color:var(--lo) var(--hi) var(--hi) var(--lo)}
+img.pt{image-rendering:pixelated;image-rendering:crisp-edges;display:block;border:2px solid;border-color:var(--lo) var(--hi) var(--hi) var(--lo);background:#777;flex:none}
+.ori{display:inline-block;font:600 11px/1 var(--f-body);color:#fff;padding:3px 6px;border:1px solid var(--ink);letter-spacing:.03em}
+.fine{font-size:12px;color:var(--ink2)}
+
+/* barre du haut */
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:4px 6px}
+.brand{font:700 20px/1 var(--f-display);color:var(--bar);letter-spacing:.06em;text-shadow:1px 1px 0 var(--hi);display:flex;align-items:center;gap:8px}
+.brand i{width:20px;height:14px;background:linear-gradient(90deg,#3b55a0 0 33.3%,#f4f1e6 0 66.6%,#b5463f 0);border:1px solid #111}
+.brand b{color:var(--red)}
+.top-info{font:20px/1 var(--f-crt);background:var(--crt);color:var(--crt-txt);padding:4px 10px;border:2px solid;border-color:var(--lo) var(--hi) var(--hi) var(--lo);white-space:nowrap}
+.top nav{margin-left:auto;display:flex;gap:6px}
+.top nav .btn{min-height:34px;padding:4px 10px;font-size:13px}
+
+/* accueil */
+.hero .wb{align-items:center;text-align:center;gap:14px;padding:22px 14px 16px}
+.parade{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.hero h1{font:700 clamp(40px,10vw,92px)/.95 var(--f-display);letter-spacing:.03em;color:var(--bar);text-shadow:3px 3px 0 var(--hi),6px 6px 0 rgba(0,0,0,.22)}
+.hero h1 b{color:var(--red)}
+.sub{font:600 clamp(15px,2.6vw,20px)/1.3 var(--f-display);color:var(--ink2);text-wrap:balance}
+.menu{display:flex;flex-direction:column;gap:8px;width:min(360px,100%)}
+.menu .btn{min-height:50px;font-size:16px}
+.ticker{overflow:hidden;white-space:nowrap;font-size:22px;line-height:1;padding:6px 0}
+.ticker span{display:inline-block;padding-left:100%;animation:tick 46s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+
+/* sélection */
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:600 12px/1 var(--f-body);background:var(--face);border:2px solid;border-color:var(--hi) var(--ink) var(--ink) var(--hi);padding:8px 10px;min-height:36px;cursor:pointer}
+.chip[aria-pressed=true]{border-color:var(--ink) var(--hi) var(--hi) var(--ink);background:var(--paper);box-shadow:inset 1px 1px 0 var(--lo)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.cc{padding:10px;display:flex;flex-direction:column;gap:8px}
+.cc-h{display:flex;gap:10px;align-items:flex-start}
+.cc h3{font:700 17px/1.15 var(--f-display)}
+.cc .party{font-size:12px;color:var(--ink2);margin:2px 0 5px}
+.cc .bio{font-size:13px;flex:1}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.mode{padding:14px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;text-align:left;cursor:pointer;font:inherit;background:var(--paper)}
+.mode svg{width:48px;height:48px;color:var(--bar)}
+.mode h3{font:700 20px/1.1 var(--f-display)}
+.mode:hover{background:#f1eee2}
+.mode .btnlike{margin-top:auto;font-weight:700;color:var(--bar)}
+.picked{display:flex;gap:10px;align-items:center}
+
+/* tableau de bord */
+#game{display:grid;gap:10px;grid-template-columns:minmax(330px,1.1fr) minmax(320px,1fr) minmax(270px,.85fr);align-items:start}
+.col{display:flex;flex-direction:column;gap:10px;min-width:0}
+.cand-row{display:flex;gap:12px;align-items:center}
+.cand-row h2{font:700 22px/1.1 var(--f-display)}
+.cand-row p{font-size:13px;color:var(--ink2);margin:2px 0 6px}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.kpi{padding:6px 4px;text-align:center;min-width:0}
+.kpi small{display:block;font-size:11px;color:#7fb48a;letter-spacing:.04em;font-family:var(--f-body)}
+.kpi b{font:400 clamp(22px,6.2vw,30px)/1 var(--f-crt);white-space:nowrap}
+.notes li{padding:5px 8px 5px 22px;position:relative;font-size:13px}
+.notes li::before{content:"▸";position:absolute;left:8px;color:var(--bar)}
+.acts{display:grid;gap:6px}
+.act{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--face);border:2px solid;border-color:var(--hi) var(--ink) var(--ink) var(--hi);box-shadow:inset -1px -1px 0 var(--lo),inset 1px 1px 0 #fff;padding:9px 10px;cursor:pointer;min-height:56px}
+.act:hover:not(:disabled){background:#d9d5c7}
+.act:disabled{cursor:default;color:var(--lo);box-shadow:none}
+.act:disabled b{text-shadow:1px 1px 0 var(--hi)}
+.act:disabled em,.act:disabled svg{color:var(--lo)}
+.act svg{width:36px;height:36px;flex:none;color:var(--bar);background:var(--paper);border:2px solid;border-color:var(--lo) var(--hi) var(--hi) var(--lo);padding:3px}
+.act b{display:block;font:700 16px/1.15 var(--f-display)}
+.act em{display:block;font-style:normal;font-size:12.5px;color:var(--ink2);margin-top:2px}
+.chartbox{padding:6px}
+#chart{display:block;width:100%;height:230px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12px;padding:2px 2px 0}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:4px;border:1px solid var(--ink);vertical-align:-1px}
+.rows{max-height:520px;overflow-y:auto}
+.row{display:grid;grid-template-columns:26px 24px minmax(0,1fr) 70px 56px;gap:6px;align-items:center;padding:3px 6px;border-bottom:1px solid #d3cfbf;font-size:13px}
+.row .rk{font:20px/1 var(--f-crt);text-align:right;color:var(--ink2)}
+.row .nm{overflow-wrap:anywhere;line-height:1.2}
+.row .nm small{display:block;color:var(--ink2);font-size:11px}
+.row .sc{font:20px/1 var(--f-crt);text-align:right;white-space:nowrap}
+.row .dl{font:600 11.5px/1 var(--f-body);text-align:right;white-space:nowrap}
+.up{color:var(--green)}.dn{color:var(--red)}.eq{color:var(--lo)}
+.row.me{background:#f3e7a9;outline:2px solid var(--gold);outline-offset:-2px}
+.row.out{color:var(--lo)}
+.row.out .sc{font:12px var(--f-body)}
+.row img.pt{border-width:1px}
+.duel{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:8px}
+.duel .side{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:12.5px}
+.duel .side b{font:400 34px/1 var(--f-crt)}
+.duel .vs{font:700 20px var(--f-display);color:var(--red)}
+.bar2{height:18px;display:flex;border:2px solid;border-color:var(--lo) var(--hi) var(--hi) var(--lo)}
+.bar2 i{display:block;background:var(--gold)}.bar2 u{display:block;flex:1;background:var(--bar2)}
+.src{font-size:11px;color:var(--ink2)}
+.news{max-height:640px;overflow-y:auto}
+.nw{padding:8px 10px;border-bottom:2px groove var(--hi)}
+.nw h4{margin:0 0 4px;font:700 14px/1.2 var(--f-display);color:var(--bar);letter-spacing:.03em}
+.nw li{font-size:13px;padding:3px 0 3px 16px;position:relative}
+.nw li::before{content:"■";position:absolute;left:0;top:5px;font-size:8px;color:var(--lo)}
+.nw li.good::before{color:var(--green)}.nw li.bad::before{color:var(--red)}.nw li.dead::before{color:#000}
+.nw li.dead{font-weight:700}.nw li.you{background:#f3e7a9}
+.nw details{margin-top:4px;font-size:12.5px}
+.nw summary{cursor:pointer;color:var(--bar);font-weight:700;padding:4px 0}
+.tabs{display:none}
+
+/* fenêtres modales */
+.ovl{position:fixed;inset:0;background:rgba(20,30,30,.55);display:flex;align-items:center;justify-content:center;padding:12px;z-index:20}
+.ovl.flash{animation:flash .7s steps(4)}
+@keyframes flash{0%,50%{background:rgba(163,66,60,.85)}25%,75%{background:rgba(246,243,232,.8)}}
+.modal{width:min(620px,100%);max-height:100%;display:flex;flex-direction:column;animation:pop .18s steps(3)}
+.modal.shake{animation:shake .5s steps(6)}
+@keyframes pop{from{transform:scale(.6)}to{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-8px,3px)}40%{transform:translate(7px,-4px)}60%{transform:translate(-5px,-2px)}80%{transform:translate(4px,3px)}}
+.modal .wb{overflow-y:auto}
+.modal h3{font:700 22px/1.15 var(--f-display);text-wrap:balance}
+.blk{padding:9px 10px}
+.blk li{padding:2px 0}
+.blk h4{margin:0 0 4px;font:700 13px/1 var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:var(--bar)}
+.blk.flashinfo{background:#2a1513;color:#f6dcd6;border-color:#000}
+.blk.flashinfo h4{color:#ffb1a5}
+.quote{font-style:italic}
+.evo{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:8px 12px}
+.evo .big{font-size:40px;line-height:1}
+.evo small{font:12px var(--f-body);color:#7fb48a;display:block}
+.modal .foot{display:flex;justify-content:flex-end;gap:8px;padding:0 10px 10px}
+.help li{padding:4px 0 4px 18px;position:relative}
+.help li::before{content:"▸";position:absolute;left:2px;color:var(--bar)}
+.vsrow{display:flex;justify-content:center;align-items:center;gap:16px;text-align:center;font-weight:700}
+.vsrow span{font:700 26px var(--f-display);color:var(--red)}
+
+/* fin */
+.endgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:10px}
+.endhead{display:flex;gap:14px;align-items:center}
+.endhead h2{font:700 clamp(26px,5vw,42px)/1 var(--f-display);text-wrap:balance}
+.recap{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;padding:8px 10px}
+.recap dt{color:var(--ink2)}.recap dd{margin:0;font-weight:700}
+
+@media (max-width:979px){
+  #app{padding:8px 16px 84px}
+  #game{grid-template-columns:1fr}
+  #game[data-tab=camp] .col:not([data-tab=camp]),#game[data-tab=sond] .col:not([data-tab=sond]),#game[data-tab=actu] .col:not([data-tab=actu]){display:none}
+  .tabs{display:grid;grid-template-columns:repeat(3,1fr);position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--face);border-top:2px solid var(--hi);box-shadow:0 -2px 0 var(--ink2);padding:6px 16px calc(6px + env(safe-area-inset-bottom));gap:6px}
+  .tabs button{font:700 15px/1 var(--f-display);min-height:52px;background:var(--face);border:2px solid;border-color:var(--hi) var(--ink) var(--ink) var(--hi);cursor:pointer}
+  .tabs button[aria-pressed=true]{border-color:var(--ink) var(--hi) var(--hi) var(--ink);background:var(--paper)}
+  .rows,.news{max-height:none}
+  .act{min-height:64px}
+  .endgrid{grid-template-columns:1fr}
+  .brand{font-size:17px}
+  .top-info{order:3;flex:1 1 100%;text-align:center;min-width:0;overflow:hidden;font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){.ticker span{animation:none;padding-left:0;white-space:normal}.ticker{white-space:normal}.modal,.modal.shake,.ovl.flash{animation:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+'use strict';
+/* =====================================================================
+   DONNÉES — tout est fictif. Pour ajouter, modifier ou retirer un candidat,
+   il suffit d'éditer ce tableau : le moteur rééquilibre les scores à 100 %.
+   statut : 'declare' (jouable), 'envisage' ou 'retire' (non proposés).
+   base : score de départ du mode « baromètre », en points.
+   p : portrait [teint 0-4, coiffure, couleur cheveux, accessoires, couleur veste]
+   ===================================================================== */
+var ORI={EG:{n:'Extrême gauche',c:'#9a3c3c'},G:{n:'Gauche',c:'#b0627c'},C:{n:'Centre',c:'#a08430'},D:{n:'Droite',c:'#46689a'},ED:{n:'Extrême droite',c:'#3b4263'},SE:{n:'Sans étiquette',c:'#667564'}};
+var ORDRE=['EG','G','C','D','ED','SE'];
+var TOUS=[
+{id:'faucillon',nom:'Bérénice Faucillon',g:'f',parti:'Front du Grand Soir Permanent',o:'EG',base:10,bio:"Annonce le Grand Soir pour lundi prochain depuis 1998. Son discours de victoire tient déjà en trois tomes.",marotte:"nationaliser les machines à café du CAC 40",p:[0,'bob','r','ef','#7a2e2e']},
+{id:'piquet',nom:'Octave Piquet',g:'m',parti:'Grève Générale Illimitée',o:'EG',base:1,bio:"Délégué syndical depuis le CM2. N'a jamais quitté une réunion sans faire voter une motion.",marotte:"instaurer un droit de grève préventif, au cas où",p:[1,'short','n','mc','#5b3a3a']},
+{id:'barricade',nom:'Lucette Barricade',g:'f',parti:'Ligue des Camarades Vraiment Fâchés',o:'EG',base:0.5,bio:"Candidate pour la sixième fois. Son tract n'a pas changé d'une virgule, et elle en est fière.",marotte:"remplacer la Bourse par une tombola",p:[0,'bun','g','g','#6d3434']},
+{id:'pave',nom:'Marius Pavé',g:'m',parti:'Collectif Sous les Pavés',o:'EG',base:0.5,bio:"Ancien cheminot, vedette des assemblées générales. Vote à main levée même pour choisir son dessert.",marotte:"réquisitionner les yachts pour en faire des colonies de vacances",p:[3,'curly','n','b','#4d4a44']},
+{id:'roseraie',nom:'Clémentine Roseraie',g:'f',parti:'Union de la Gauche Désunie',o:'G',base:8,bio:"Tente de rassembler la gauche depuis quinze ans. A réussi une fois, le temps d'un déjeuner.",marotte:"organiser un congrès de l'unité, puis un second pour s'en remettre",p:[1,'long','c','e','#a8576f']},
+{id:'compost',nom:'Gaspard Compost',g:'m',parti:'Les Verts de Rage',o:'G',base:4.5,bio:"Se déplace uniquement à vélo cargo, y compris pour aller à Bruxelles. Arrive en retard, mais décarboné.",marotte:"rendre le compost obligatoire dans les ministères",p:[0,'long','b','b','#4c7a4a']},
+{id:'lacagnotte',nom:'Honorine Lacagnotte',g:'f',parti:'Mouvement pour la Retraite à 35 Ans',o:'G',base:2.5,bio:"Ancienne comptable. Jure que tout est finançable « en cherchant bien sous les coussins ».",marotte:"abaisser l'âge de la retraite à 35 ans, pot de départ remboursé",p:[2,'bun','n','g','#8c5a6b']},
+{id:'velocipede',nom:'Théodule Vélocipède',g:'m',parti:'Alliance Cyclable et Solidaire',o:'G',base:1,bio:"Maire d'une commune de 312 habitants et de 400 pistes cyclables.",marotte:"transformer le périphérique en vélodrome",p:[0,'bald','g','gm','#5f8a5a']},
+{id:'synthese',nom:'Margaux Synthèse',g:'f',parti:'Parti du Compromis Introuvable',o:'G',base:0.5,bio:"Spécialiste des motions de synthèse. Concilie deux positions opposées en une phrase de quatre pages.",marotte:"créer un droit opposable à la motion de synthèse",p:[0,'bob','bl','','#9a6a80']},
+{id:'canape',nom:'Firmin Canapé',g:'m',parti:'La Gauche du Canapé',o:'G',base:1.5,bio:"Milite surtout depuis son salon. Redoutable sur les pétitions en ligne.",marotte:"autoriser le télétravail pour les manifestations",p:[1,'curly','c','g','#7c6a8a']},
+{id:'quinoa',nom:'Perrine Quinoa',g:'f',parti:'Front du Potager Partagé',o:'G',base:0.5,bio:"Ingénieure reconvertie dans la permaculture. Parle à ses tomates, qui la soutiennent sans réserve.",marotte:"installer un potager partagé sur le toit de chaque préfecture",p:[4,'curly','n','ef','#55804f']},
+{id:'dumilieu',nom:'Aymeric Dumilieu',g:'m',parti:'Ni Oui Ni Non',o:'C',base:14,bio:"Ancien haut fonctionnaire. N'a jamais pris position sans avoir d'abord commandé un rapport.",marotte:"lancer un grand débat national sur l'opportunité d'un grand débat national",p:[0,'side','c','gt','#3e4a66']},
+{id:'tiede',nom:'Constance Tiède',g:'f',parti:"Parti de l'Extrême Centre",o:'C',base:6,bio:"Radicalement modérée. Ses meetings finissent à l'heure et sans applaudissements excessifs.",marotte:"fixer la température réglementaire des débats à 19 °C",p:[0,'bob','c','e','#8a7a4a']},
+{id:'consensus',nom:'Jean-Eudes Consensus',g:'m',parti:'Rassemblement des Modérés Modérément Modérés',o:'C',base:2.5,bio:"A été ministre de quelque chose sous quelqu'un. Personne ne se rappelle quoi, lui non plus.",marotte:"créer une commission chargée d'évaluer les commissions",p:[1,'bald','w','t','#5c5a50']},
+{id:'tableur',nom:'Sixtine Tableur',g:'f',parti:'Synergie & Tableurs',o:'C',base:1,bio:"Ancienne consultante. Présente son programme en 148 diapositives, dont une lisible.",marotte:"remplacer le Journal officiel par un tableau croisé dynamique",p:[2,'long','n','g','#3f5f7a']},
+{id:'delarente',nom:'Charles-Henri de la Rente',g:'m',parti:'Union des Propriétaires Inquiets',o:'D',base:9,bio:"Héritier d'une longue lignée d'héritiers. Connaît le prix du pain « à quelques dizaines d'euros près ».",marotte:"défiscaliser les résidences tertiaires",p:[0,'side','w','tm','#2f3f66']},
+{id:'cocorico',nom:'Bernadette Cocorico',g:'f',parti:"La France d'Avant-Hier",o:'D',base:5,bio:"Regrette une époque qu'elle n'a pas connue. Collectionne les porte-clés de sous-préfectures.",marotte:"rétablir le franc, le minitel et le service du dimanche",p:[0,'bun','w','eh','#3f5a8a']},
+{id:'bouclier',nom:'Gonzague Bouclier',g:'m',parti:"Moins d'Impôts Tout de Suite",o:'D',base:3,bio:"Expert-comptable. Promet de baisser tous les impôts, y compris ceux qui n'existent pas encore.",marotte:"supprimer l'impôt sur les impôts",p:[1,'short','b','gt','#34507a']},
+{id:'duprecarre',nom:'Marie-Chantal Dupré-Carré',g:'f',parti:'Ordre et Géraniums',o:'D',base:1.5,bio:"Présidente d'une association de riverains très mécontents. Ses pétitions font trembler trois cantons.",marotte:"imposer l'uniforme aux ministres, cravate comprise",p:[0,'bob','bl','e','#4a5f8f']},
+{id:'clocher',nom:'Raoul Clocher',g:'m',parti:"Nos Villages d'Abord",o:'D',base:1,bio:"Maire depuis 1989, réélu à l'unanimité des présents. Connaît ses administrés par leur prénom et leur tracteur.",marotte:"ouvrir une sous-préfecture dans chaque hameau",p:[0,'bald','g','mh','#5a6a4f']},
+{id:'sortie',nom:'Hubert Sortie',g:'m',parti:'Mouvement pour la Sortie de Tout',o:'D',base:0.5,bio:"Veut sortir de l'Europe, de l'euro, de l'heure d'été et, à terme, du système solaire.",marotte:"sortir du fuseau horaire, pour commencer",p:[0,'short','r','t','#3a4a70']},
+{id:'merite',nom:'Ludivine Mérite',g:'f',parti:'Parti des Lève-Tôt',o:'D',base:0.5,bio:"Cheffe d'entreprise debout à 4 h 30. Tient le déjeuner pour une perte de compétitivité.",marotte:"avancer le lever du soleil d'une heure par décret",p:[3,'bun','n','','#2f4f7a']},
+{id:'terroir',nom:'Aldebert Terroir',g:'m',parti:'Cercle du Bon Sens Paysan',o:'D',base:0.5,bio:"Éleveur et philosophe de comptoir. Chacune de ses réponses commence par « De mon temps ».",marotte:"inscrire le fromage au lait cru dans la Constitution",p:[1,'short','g','bh','#6a5a3c']},
+{id:'muraille',nom:'Gontran Muraille',g:'m',parti:'Forteresse Nationale',o:'ED',base:17,bio:"Voit des menaces partout, y compris dans le bulletin météo. Son programme tient en un mot : « non ».",marotte:"installer un pont-levis à chaque péage",p:[0,'short','n','t','#2c3050']},
+{id:'verrou',nom:'Isolde Verrou',g:'f',parti:'Front des Volets Fermés',o:'ED',base:4,bio:"Dénonce le déclin depuis son premier bulletin scolaire. Ferme ses meetings à double tour.",marotte:"interdire les mots anglais, à commencer par « week-end »",p:[0,'long','bl','','#343a5c']},
+{id:'buzz',nom:'Kévin Buzz',g:'m',parti:'Sans étiquette (influenceur)',o:'SE',base:1.5,bio:"Trois millions d'abonnés, zéro programme. A annoncé sa candidature en story, entre deux codes promo.",marotte:"remplacer le Conseil des ministres par un groupe de discussion",p:[2,'crest','v','','#c06a3a']},
+{id:'miaou',nom:'Cunégonde Miaou',g:'f',parti:"Parti des Chats d'Abord",o:'SE',base:0.5,bio:"Porte-parole autoproclamée des félins de France. Son directeur de campagne ronronne.",marotte:"installer un chat dans chaque mairie",p:[0,'long','g','kg','#7a6a8a']},
+{id:'biscoto',nom:'Achille Biscoto',g:'m',parti:'Sans étiquette (ancien champion)',o:'SE',base:2,bio:"Septuple champion du monde de lancer de béret. Veut gouverner « comme on prépare une finale ».",marotte:"rendre les pompes obligatoires avant le Conseil des ministres",p:[4,'bald','n','s','#a33c3c']}
+];
+var CANDS=TOUS.filter(function(c){return (c.statut||'declare')==='declare';});
+var byId={};CANDS.forEach(function(c){byId[c.id]=c;});
+
+var MODES={
+ baro:{t:"Sondages de l'institut",ico:'bars',d:"Commencez votre campagne avec le rapport de forces du dernier baromètre Sofratop, institut aussi fictif que ses sondés. Favoris, outsiders et figurants : chacun part de sa place.",src:"Base de départ : baromètre Sofratop (institut fictif), vague de novembre. Données de jeu, sans lien avec de vrais sondages."},
+ alea:{t:"Sondages aléatoires",ico:'dice',d:"Oubliez les rapports de force habituels. Tout le monde repart avec une situation électorale imprévisible. À vous de créer la surprise !",src:"Base de départ : tirage aléatoire du moteur de jeu."},
+ egal:{t:"Égalité au départ",ico:'equal',d:"Tous les candidats partent sur un pied d'égalité. La campagne commence sans favori. À vous de faire la différence !",src:"Base de départ : répartition égale, aux arrondis près."}
+};
+var ACTIONS=[
+ {k:'discours',t:'Faire un discours',d:"Organisez un grand meeting et tentez de convaincre les électeurs avec un discours rassembleur. Une grande prestation peut donner un nouvel élan à votre campagne, mais les rassemblements publics ne sont jamais sans imprévus."},
+ {k:'promesse',t:'Publier une promesse électorale',d:"Faites une nouvelle annonce pour enrichir votre programme et tenter de convaincre les électeurs. Attention, toutes les promesses ne rencontrent pas le succès escompté."},
+ {k:'livre',t:'Écrire un livre',d:"Prenez la plume pour raconter votre vision de la France. Un ouvrage peut renforcer votre stature présidentielle, mais encore faut-il intéresser les lecteurs."},
+ {k:'tele',t:'Faire une interview à la télévision',d:"Passez sur le plateau d'une grande chaîne nationale pour défendre vos idées et répondre aux questions des journalistes. Une occasion de vous faire entendre, mais aussi de vous retrouver dans une situation délicate."},
+ {k:'usine',t:'Visiter une usine',d:"Partez à la rencontre des salariés et découvrez les réalités du monde du travail. Une visite de terrain peut rapprocher le candidat des Français, mais certains déplacements peuvent être mouvementés."},
+ {k:'repos',t:'Se reposer',d:"Prenez une journée pour souffler et préparer la suite de votre campagne. Vous ne pouvez pas être partout à la fois."}
+];
+var ACTNOM={};ACTIONS.forEach(function(a){ACTNOM[a.k]=a.t;});
+var NT={p1:9,final:3};
+var PHASE={p1:'Campagne',final:'Finale'};
+
+/* ---------- textes ---------- */
+var MEDIAS=["Le Quotidien du Soir","Info-Matin","Radio Bocage","L'Écho des Préfectures","Canal Info 24","La Gazette des Ronds-Points","Le Pélican Libéré","Télé-Hexagone"];
+var LIEUX=["au Zénith de Limoges","à la salle polyvalente de Vierzon","sur le parking d'un hypermarché de Montluçon","au palais des congrès de Châteauroux","dans un gymnase de Saint-Dizier","sous un chapiteau à Guéret","à la halle aux grains de Vesoul"];
+var USINES=["une usine de pantoufles à Charleville-Mézières","une conserverie de sardines à Douarnenez","une fabrique de boules de pétanque près de Saint-Étienne","une biscuiterie à Pont-Aven","une usine de bretelles à Roubaix","une moutarderie à Dijon","une fabrique de parapluies à Cherbourg"];
+var PROM={
+ EG:["instaurer la semaine de quatre heures","plafonner les salaires des patrons au prix d'un ticket-restaurant","rendre les lundis facultatifs","offrir une mobylette à chaque gréviste"],
+ G:["rendre les transports gratuits, trottinettes comprises","accorder une RTT automatique les jours de pluie","plafonner le prix de la baguette et de l'abonnement internet","créer un ministère du Temps libre et de la Sieste"],
+ C:["simplifier le formulaire de simplification","ouvrir un numéro vert pour savoir quel numéro vert appeler","organiser des assises de la concertation préalable","réformer la réforme, mais avec méthode"],
+ D:["défiscaliser les heures de sieste des entrepreneurs","faire chanter l'hymne chaque matin au bureau","rétablir le vouvoiement obligatoire en réunion","récompenser les lève-tôt par une médaille"],
+ ED:["peindre tous les ronds-points en bleu, blanc, rouge","fermer la frontière belge les soirs de match","rendre la blanquette obligatoire à la cantine","poster un garde champêtre devant chaque mairie"],
+ SE:["installer le wifi gratuit dans les forêts","organiser des Jeux olympiques tous les ans","créer un jour férié surprise par trimestre","remplacer les vœux présidentiels par un karaoké"]
+};
+var LIVRES=["Moi, la France et moi","Ce que je crois (et ce que je croyais avant)","Demain sera pire, sauf si vous votez bien","Mémoires d'un futur chef de l'État","La France, mode d'emploi","J'avais raison","Lettre aux Français qui ne m'ont rien demandé","Mon programme en douze leçons et trois rattrapages","Debout dès l'aube, couché sur le papier"];
+var LIVRES_D=["352 pages, dont 40 de remerciements","écrit en un week-end, relu en dix minutes","préface de l'auteur, postface de l'auteur","avec un cahier photo de l'auteur en train d'écrire","premier tome d'une trilogie que personne n'a commandée"];
+var QUESTIONS=["Quel est le prix d'un ticket de métro ?","Pain au chocolat ou chocolatine ? Les Français veulent savoir.","Pouvez-vous citer un seul de vos futurs ministres ?","Votre programme est-il chiffré, et si oui, par qui ?","Vous disiez exactement le contraire il y a dix ans. Qui croire ?","Pouvez-vous nous réciter la table de sept ?","Combien y a-t-il de départements, à dix près ?","Qui gardera votre chat pendant le quinquennat ?"];
+var REAC={
+ ok:["Une prestation de chef d'État, ou presque.","On attendait {N} au tournant : le virage est pris.","Les indécis ont enfin une raison d'hésiter un peu moins.","Carton plein. Même le stagiaire de la rédaction a applaudi."],
+ ko:["Un naufrage, mais avec les violons.","On a connu des pannes d'ascenseur plus enthousiasmantes.","Son entourage évoque « un moment d'apprentissage ».","Rarement une campagne avait autant ressemblé à un bêtisier."],
+ nul:["Une heure d'antenne, zéro information. Du grand art.","Ni gagnant ni perdant, sauf peut-être le téléspectateur."],
+ survie:["Le pays retient son souffle, puis applaudit.","Une image qui restera : debout, le col à peine de travers."],
+ mort:["La France est sous le choc. Les autres candidats suspendent leur campagne jusqu'à demain matin."],
+ repos:["Mais où est passé{e} {N} ?","Journée blanche pour {N}, aperçu{e} en charentaises.","{N} disparaît des radars. Ses adversaires s'inquiètent : que prépare-t-{il} ?"]
+};
+var VOUS={
+ discours:{
+  ok:{t:["Meeting triomphal","La salle est debout"],d:["Vous enflammez la foule {lieu}. On scande votre nom, quelqu'un lance même un béret sur scène.","Votre discours {lieu} fait mouche : trois ovations, deux évanouissements, aucun bâillement."]},
+  ko:{t:["Meeting raté","Soirée à oublier"],d:["Micro en panne, salle à moitié vide et lapsus sur le nom de la ville : votre meeting {lieu} tourne au fiasco.","Vous lisez par erreur le discours de la semaine dernière {lieu}. Le public s'en aperçoit avant vous."]},
+  survie:{t:["Attentat déjoué de justesse"],d:["Un individu armé surgit pendant votre meeting {lieu}. Votre service d'ordre le maîtrise de justesse. Vous reprenez le micro et terminez votre phrase : le pays salue votre sang-froid."]},
+  mort:{t:["Drame en plein meeting"],d:["Un individu armé surgit pendant votre meeting {lieu}. Les secours n'ont rien pu faire. Votre campagne s'arrête ici."]}},
+ promesse:{
+  ok:{t:["Promesse applaudie","Une annonce qui porte"],d:["Vous promettez de {p}. L'idée séduit : les éditorialistes parlent d'une « proposition enfin concrète »."]},
+  ko:{t:["Promesse moquée","L'annonce fait pschitt"],d:["Vous promettez de {p}. Un long silence, puis des rires. Votre équipe jure que c'était « du second degré »."]}},
+ livre:{
+  ok:{t:["Succès de librairie"],d:["Vous publiez « {t} » ({d}). Le livre grimpe en tête des ventes, juste derrière un recueil de recettes à la friteuse sans huile."]},
+  ko:{t:["Un four en librairie"],d:["Vous publiez « {t} » ({d}). Il s'en vend 312 exemplaires, dont 300 à votre famille. La critique est sans pitié."]}},
+ tele:{
+  ok:{t:["Interview réussie"],d:["Sur le plateau, on vous demande : « {q} » Vous répondez du tac au tac. Le présentateur en perd son prompteur."]},
+  nul:{t:["Interview sans relief"],d:["Sur le plateau, on vous demande : « {q} » Vous répondez longuement à une autre question. Personne ne s'en aperçoit."]},
+  ko:{t:["Naufrage en direct"],d:["Sur le plateau, on vous demande : « {q} » Long silence. Vous tentez une blague. Le silence s'allonge."]}},
+ usine:{
+  ok:{t:["Visite réussie","Un tabac à l'atelier"],d:["Vous visitez {u}. Les salariés vous offrent un bleu de travail à votre nom ; vous le gardez toute la journée, et il vous va bien."]},
+  ko:{t:["Visite glaciale"],d:["Vous visitez {u}. Vous serrez la main d'un mannequin de sécurité et appelez le chef d'atelier « mon brave ». L'accueil se refroidit nettement."]},
+  survie:{t:["Attentat déjoué de justesse"],d:["Pendant votre visite dans {u}, un homme armé force le passage. Un contremaître le plaque au sol d'un geste sûr. Vous en sortez indemne, et la photo fait le tour du pays."]},
+  mort:{t:["Drame pendant la visite"],d:["Pendant votre visite dans {u}, un homme armé force le passage. Personne n'a pu s'interposer à temps. Votre campagne s'arrête ici."]}},
+ repos:{repos:{t:["Journée de repos"],d:["Vous dormez dix heures, relisez vos fiches et retrouvez enfin le prénom de vos conseillers. La France se passe de vous une journée, et s'en remet."]}}
+};
+var EUX={
+ discours:{ok:"{N} triomphe en meeting {lieu}.",ko:"{N} rate son meeting {lieu} : salle clairsemée, discours confus.",survie:"ATTENTAT DÉJOUÉ. {N} échappe de peu à une attaque en plein meeting. Sa cote s'envole.",mort:"DRAME. {N} est tué{e} dans un attentat en plein meeting. Sa candidature s'éteint avec {lui}."},
+ promesse:{ok:"{N} promet de {p} : l'idée plaît.",ko:"{N} promet de {p} : éclat de rire général."},
+ livre:{ok:"{N} publie « {t} » : succès en librairie.",ko:"{N} publie « {t} » : un four retentissant."},
+ tele:{ok:"{N} brille à la télévision.",nul:"{N} passe à la télévision sans rien dire de mémorable.",ko:"{N} s'embrouille en direct à la télévision."},
+ usine:{ok:"{N} fait un tabac dans {u}.",ko:"{N} se fait siffler dans {u}.",survie:"ATTENTAT DÉJOUÉ. {N} échappe de peu à une attaque pendant une visite d'usine. Sa cote s'envole.",mort:"DRAME. {N} est tué{e} dans un attentat pendant une visite d'usine. Sa candidature s'éteint avec {lui}."},
+ repos:{repos:"{N} prend une journée de repos."}
+};
+var ECO=[{t:"Le chômage recule pour le troisième mois de suite.",o:['C','D']},{t:"Les salaires repartent à la hausse.",o:['G','EG']},{t:"Une grande usine annonce son retour en France.",o:['D','ED','EG']},{t:"Les ventes de vélos battent un record historique.",o:['G','SE']},{t:"Le moral des ménages remonte, sans que personne sache pourquoi.",o:['C','SE']}];
+var X={
+ truc:["un séminaire de cohésion aux Maldives","4 000 stylos gravés à son effigie","une piscine dite « de fonction »","douze abonnements à des plateformes de streaming"],
+ perso:["Le chanteur Rocky Bastringue","La cheffe Ginette Fricassée","L'animateur Jean-Mimi Paillettes","La championne de pétanque Josiane Carreau","L'acteur Gérald Beauregard"],
+ rallie:["Barnabé Girouette","Solange Volte-Face","Ignace Retournement"],
+ vid:["dansant la bourrée dans une maison de retraite","réparant le vélo d'un livreur","ratant une crêpe avec panache","caressant un veau au Salon de l'agriculture"],
+ formule:["On ne gouverne pas avec des si, mais avec des donc","Moi, au moins, je sais où se trouve Guéret","Vous avez un programme, j'ai un cap"],
+ metier:["boulangers de nuit","moniteurs d'auto-école","sonneurs de cloches","contrôleurs de manèges"],
+ gaffe:["salue « les habitants de Nantes » en plein meeting à Rennes","affirme que la baguette coûte « dans les quinze euros »","oublie le nom de son propre parti en direct"],
+ revel:["a raté onze fois son permis de conduire","a présidé le fan-club d'un concurrent","a triché à un concours de belote en 1997"],
+ cata:["conseille aux Français de « manger des pâtes un jour sur deux, comme tout le monde »","confond la Creuse et la Corrèze en direct","affirme que le salaire minimum est « autour de 4 000 euros »"],
+ scand:["Le trésorier de {N} est parti avec la caisse et le minibus de campagne. On le dit en route pour Andorre.","Le directeur de campagne de {N} a été filmé en train de vanter le programme d'un concurrent."]
+};
+var o6=function(a,b,c,d,e,f){return function(k){return {EG:a,G:b,C:c,D:d,ED:e,SE:f}[k.o];};};
+var EVTS=[
+ {k:'antisem',w:6,grave:1,titre:"Accusation d'antisémitisme",pts:o6(-12,-8,-8,-7,-5,-7),txt:["Une association accuse {N} d'antisémitisme après des propos tenus en marge d'un déplacement. {Il} dénonce « une manipulation » et annonce porter plainte. La polémique enfle."]},
+ {k:'racisme',w:6,grave:1,titre:"Accusation de racisme",pts:o6(-5,-7,-8,-10,-15,-7),txt:["Une séquence filmée vaut à {N} des accusations de racisme. Son entourage parle d'une phrase « sortie de son contexte ». Le contexte, lui, reste introuvable."]},
+ {k:'fonds',w:o6(4,8,14,10,4,6),grave:1,titre:"Soupçons de détournement de fonds",pts:-6,txt:["« {media} » affirme que la campagne de {N} aurait financé {truc}. {Il} assure que tout est « parfaitement légal, ou presque »."]},
+ {k:'cata',w:8,titre:"Déclaration catastrophique",pts:-5,txt:["Interrogé{e} sur le pouvoir d'achat, {N} {cata}. Tollé général."]},
+ {k:'scand',w:7,grave:1,titre:"Scandale dans l'équipe de campagne",pts:-7,txt:["{scand}"]},
+ {k:'manifc',w:7,titre:"Manifestation contre {N}",pts:-5,txt:["Plusieurs milliers de personnes défilent contre {N}. Les pancartes sont cruelles, mais bien orthographiées."]},
+ {k:'fuite',w:5,titre:"Fuite dans la presse",pts:-4,txt:["Une note interne de l'équipe de {N} fuite : elle classe les électeurs en « acquis », « hésitants » et « pénibles »."]},
+ {k:'ancienne',w:6,titre:"Polémique sur une ancienne déclaration",pts:-4,txt:["Une vidéo de 2009 refait surface : {N} y jurait de « ne jamais, jamais se présenter à quoi que ce soit »."]},
+ {k:'com',w:6,titre:"Erreur de communication",pts:-3,txt:["L'affiche officielle de {N} est imprimée avec une faute à « République ». 80 000 exemplaires sont déjà collés."]},
+ {k:'equipe',w:5,titre:"Déclaration controversée d'un proche",pts:-4,txt:["Le porte-parole de {N} déclare que « les électeurs indécis pourraient faire un effort ». L'intéressé parle d'humour."]},
+ {k:'rumeur',w:6,titre:"Rumeur sur les réseaux sociaux",pts:-3,txt:["Une rumeur affirme que {N} ne saurait pas faire cuire un œuf. Le démenti, filmé en cuisine, aggrave les choses."]},
+ {k:'soutien',w:7,titre:"Soutien d'une personnalité populaire",pts:6,txt:["{perso} annonce son soutien à {N} : « C'est quelqu'un de simple, comme moi. »"]},
+ {k:'rallie',w:6,titre:"Ralliement d'un ancien adversaire",pts:5,txt:["{rallie}, ancien rival, rallie {N} « par conviction, et un peu faute de mieux »."]},
+ {k:'video',w:7,titre:"Vidéo virale",pts:4,txt:["Une vidéo de {N} {vid} dépasse les dix millions de vues."]},
+ {k:'gaffe',w:7,titre:"Gaffe d'un adversaire",pts:3,rival:-2,txt:["{R} {gaffe}. {N} en profite sans même avoir à commenter."]},
+ {k:'eco',w:6,titre:"Bonne nouvelle économique",pts:0,txt:["{eco} {suite}"]},
+ {k:'debat',w:6,titre:"Débat réussi",pts:7,txt:["{N} domine le débat télévisé. Sa formule « {formule} » tourne en boucle."]},
+ {k:'syndicat',w:5,titre:"Soutien inattendu d'un syndicat",pts:4,txt:["Le Syndicat national des {metier} appelle à voter {N}. Personne ne l'avait vu venir, {N} non plus."]},
+ {k:'manifs',w:5,titre:"Manifestation de soutien",pts:4,txt:["Des milliers de sympathisants défilent pour {N}. Certains sont même venus sans car affrété."]},
+ {k:'revel',w:5,titre:"Révélation sur le passé d'un concurrent",pts:3,rival:-4,txt:["On apprend que {R} {revel}. Par contraste, {N} paraît soudain très présidentiable."]},
+ {k:'virale',w:6,titre:"Proposition devenue virale",pts:5,txt:["L'idée de {N}, {marotte}, devient un phénomène en ligne. On en fait même des tee-shirts."]},
+ {k:'greve',w:5,titre:"Mouvement de grève",pts:o6(4,3,-4,-3,1,0),txt:["Une grève massive paralyse le pays. {suite}"]}
+];
+
+/* ---------- outils ---------- */
+var rnd=Math.random;
+function pick(a){return a[Math.floor(rnd()*a.length)];}
+function rint(a,b){return a+Math.floor(rnd()*(b-a+1));}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function wpick(pairs){var t=0,i;for(i=0;i<pairs.length;i++)t+=pairs[i][1];var r=rnd()*t;for(i=0;i<pairs.length;i++){r-=pairs[i][1];if(r<=0)return pairs[i][0];}return pairs[pairs.length-1][0];}
+function fu(u){return String(u/2).replace('.',',')+' %';}
+function fd(u){return u===0?'=':(u>0?'+':'−')+String(Math.abs(u)/2).replace('.',',');}
+function ord(n,f){return n===1?(f?'1re':'1er'):n+'e';}
+function T(s,c,x){x=x||{};var f=c&&c.g==='f';
+ return s.replace(/\{(\w+)\}/g,function(m,k){
+  if(k==='N')return c.nom; if(k==='il')return f?'elle':'il'; if(k==='Il')return f?'Elle':'Il'; if(k==='e')return f?'e':''; if(k==='lui')return f?'elle':'lui';
+  return x[k]!==undefined?x[k]:m;});}
+function T2(s,c,x){return T(T(s,c,x),c,x);}
+
+/* répartition entière (unités de 0,5 point) par plus forts restes, total garanti */
+function repartir(w,total,min){
+ var ids=Object.keys(w),sum=0,out={},used=0,fr=[],i;
+ for(i=0;i<ids.length;i++)sum+=w[ids[i]];
+ for(i=0;i<ids.length;i++){var ex=w[ids[i]]/sum*total,f=Math.floor(ex);if(f<min)f=min;out[ids[i]]=f;used+=f;fr.push([ids[i],ex-Math.floor(ex),rnd()]);}
+ var rest=total-used;
+ fr.sort(function(a,b){return b[1]-a[1]||b[2]-a[2];});
+ var k=0;
+ while(rest>0){out[fr[k%fr.length][0]]++;rest--;k++;}
+ while(rest<0){var big=ids[0];for(i=1;i<ids.length;i++)if(out[ids[i]]>out[big])big=ids[i];out[big]--;rest++;}
+ return out;}
+function scoresDepart(mode){
+ var w={},n=CANDS.length,i;
+ if(mode==='egal'){var b=Math.floor(200/n),out={},extra=200-b*n,ids=CANDS.map(function(c){return c.id;});
+  ids.forEach(function(id){out[id]=b;});
+  ids.sort(function(){return rnd()-.5;});
+  for(i=0;i<extra;i++)out[ids[i%n]]++;
+  return out;}
+ if(mode==='alea'){CANDS.forEach(function(c){w[c.id]=Math.pow(-Math.log(1-rnd()*0.999),1.35)+0.04;});}
+ else{CANDS.forEach(function(c){w[c.id]=c.base||0.5;});}
+ return repartir(w,200,1);}
+
+/* ---------- moteur ---------- */
+function vivants(S){return S.phase==='p1'?CANDS.map(function(c){return c.id;}).filter(function(i){return S.c[i].alive;}):S.duel.filter(function(i){return S.c[i].alive;});}
+function classement(S,ids){ids=(ids||vivants(S)).slice();return ids.sort(function(a,b){var A=S.c[a],B=S.c[b];return B.sc-A.sc||B.cred-A.cred||B.tb-A.tb;});}
+function instantane(S){var o={};CANDS.forEach(function(c){o[c.id]=S.c[c.id].sc;});return o;}
+function nouvellePartie(candId,mode){
+ var S={v:2,me:candId,mode:mode,phase:'p1',turn:1,g:1,c:{},duel:null,hist:{p1:[],final:[]},news:[],
+  stats:{acts:{},maxU:0,bestRank:99,evts:0,att:0,turns:0,start:0,out:0},end:null,fin1:null};
+ var init=scoresDepart(mode);
+ CANDS.forEach(function(c){S.c[c.id]={sc:init[c.id],prev:init[c.id],alive:true,out:null,pop:45+rint(0,10),cred:45+rint(0,10),fat:8+rint(0,10),sec:60+rint(0,10),dyn:0,recent:[],tb:rnd(),livre:false,usineG:null};});
+ S.hist.p1.push(instantane(S));
+ S.stats.start=S.stats.maxU=S.c[candId].sc;
+ S.stats.bestRank=classement(S).indexOf(candId)+1;
+ var lead=byId[classement(S)[0]];
+ S.news.push({label:'Ouverture de la campagne',une:[{t:'info',s:"La campagne présidentielle est lancée : "+CANDS.length+" candidats sont sur la ligne de départ."},{t:'info',s:T("{N} part en tête des intentions de vote.",lead)},{t:'you',s:T("{N} entre en campagne. C'est vous.",byId[candId])}],brief:[]});
+ return S;}
+
+var K_IA=0.6,K_PLAFOND=0.45,K_SERIE=-3;
+function effet(S,id,pts,cur,duel){
+ var st=S.c[id],f=duel?1:clamp(0.25+(cur/2)/13,0.3,1.25);
+ if(pts>0)f*=(1+0.05*st.dyn)*(1+(st.pop-50)/300);else f*=(1-0.04*st.dyn)*(1-(st.pop-50)/300);
+ if(!duel&&pts>0&&id!==S.me)f*=K_IA; /* léger avantage au joueur face à 27 concurrents */
+ var u=Math.round(pts*2*f);if(u===0)u=pts>0?1:-1;
+ if(!duel&&u<0){
+  if(cur<2)u=st.dyn<=K_SERIE?-cur:0; /* au plancher, seule une mauvaise série fait tomber à 0 % */
+  else u=-Math.min(-u,Math.min(Math.max(1,Math.round(cur*K_PLAFOND)),cur-1));}
+ return u;}
+/* règles d'usage : un seul livre par partie, une visite d'usine tous les trois tours au plus */
+function attente(S,id){var st=S.c[id];return st.usineG==null?0:Math.max(0,3-(S.g-st.usineG));}
+function dispo(S,id,act){if(act==='livre')return !S.c[id].livre;if(act==='usine')return attente(S,id)===0;return true;}
+var FAT={discours:18,promesse:8,livre:14,tele:12,usine:20,repos:-45};
+var CRED={discours:[2,-2],promesse:[1,-5],livre:[6,-8],tele:[5,-6],usine:[3,-3]};
+function resoudre(S,id,act){
+ var st=S.c[id],sh=(st.cred-50)/50*0.08+st.dyn*0.01;if(st.fat>50)sh-=(st.fat-50)/50*0.16;sh=clamp(sh,-0.2,0.12);
+ var out,pts=0,r=rnd(),nProm=st.recent.filter(function(a){return a==='promesse';}).length;
+ if(act==='discours'||act==='usine'){
+  var pA=(act==='discours'?0.05:0.25)*clamp(1+(65-st.sec)/100,0.6,1.6);
+  if(rnd()<pA){if(rnd()<0.5)out='mort';else{out='survie';pts=20;}}
+  else if(r<clamp((act==='discours'?55/95:55/75)+sh,0.1,0.92)){out='ok';pts=act==='discours'?5:10;}
+  else{out='ko';pts=-5;}
+ }else if(act==='promesse'){if(r<0.6+sh-(nProm>=2?0.12:0)){out='ok';pts=2;}else{out='ko';pts=-2;}}
+ else if(act==='livre'){if(r<0.75+sh){out='ok';pts=5;}else{out='ko';pts=-15;}}
+ else if(act==='tele'){var p=clamp(0.5+sh,0.1,0.65);if(r<p){out='ok';pts=6;}else if(r<p+0.3){out='nul';}else{out='ko';pts=-8;}}
+ else out='repos';
+ if(act==='livre')st.livre=true;if(act==='usine')st.usineG=S.g;
+ st.fat=clamp(st.fat+FAT[act],0,100);
+ if(act==='repos'){st.cred+=9;st.sec+=15;st.dyn+=st.dyn>0?-1:st.dyn<0?1:0;}
+ if(act==='discours')st.sec-=6;if(act==='usine')st.sec-=10;
+ if(out==='ok'){st.cred+=CRED[act][0];st.dyn++;st.pop+=act==='usine'?5:act==='discours'?3:1;}
+ if(out==='ko'){st.cred+=CRED[act][1];st.dyn--;st.pop-=3;}
+ if(out==='survie'){st.sec+=35;st.pop+=12;st.dyn+=2;st.cred+=4;}
+ if(act==='promesse'&&nProm>=2)st.cred-=4;
+ st.cred=clamp(st.cred,0,100);st.sec=clamp(st.sec,5,100);st.pop=clamp(st.pop,0,100);st.dyn=clamp(st.dyn,-3,3);
+ st.recent.push(act);if(st.recent.length>3)st.recent.shift();
+ return {act:act,out:out,pts:pts};}
+function promesse(c){return rnd()<0.35?c.marotte:pick(PROM[c.o]);}
+function decor(c,act){return {lieu:pick(LIEUX),u:pick(USINES),p:promesse(c),t:pick(LIVRES),d:pick(LIVRES_D),q:pick(QUESTIONS)};}
+function tirerEvenement(S,id,ids){
+ var c=byId[id],st=S.c[id];
+ var e=wpick(EVTS.map(function(ev){return [ev,typeof ev.w==='function'?ev.w(c):ev.w];}));
+ var pts=typeof e.pts==='function'?e.pts(c):e.pts,rival=null,rpts=0;
+ var x={media:pick(MEDIAS),truc:pick(X.truc),perso:pick(X.perso),rallie:pick(X.rallie),vid:pick(X.vid),formule:pick(X.formule),metier:pick(X.metier),gaffe:pick(X.gaffe),revel:pick(X.revel),cata:pick(X.cata),scand:pick(X.scand),marotte:c.marotte};
+ if(e.rival){var others=ids.filter(function(i){return i!==id&&S.c[i].alive;});
+  if(others.length){others.sort(function(a,b){return Math.abs(S.c[a].sc-st.sc)-Math.abs(S.c[b].sc-st.sc);});rival=pick(others.slice(0,4));rpts=e.rival;x.R=byId[rival].nom;}
+  else x.R='Un concurrent';}
+ if(e.k==='eco'){var f=pick(ECO);x.eco=f.t;pts=f.o.indexOf(c.o)>=0?4:1;x.suite=pts===4?"Le camp de {N} y voit la preuve qu'il avait raison depuis le début.":"{N} tente de s'en attribuer le mérite, sans grand succès.";}
+ if(e.k==='greve'){x.suite=pts>0?"{N}, présent{e} dans les cortèges, engrange des soutiens.":pts<0?"{N}, coincé{e} dans un train à l'arrêt, peine à trouver les mots.":"{N} préfère ne pas commenter.";}
+ if(pts<0){st.cred-=e.grave?10:6;st.pop-=5;st.dyn--;if(e.k==='manifc')st.sec-=10;}
+ if(pts>0){st.pop+=5;st.dyn++;if(e.k==='debat')st.cred+=6;}
+ st.cred=clamp(st.cred,0,100);st.sec=clamp(st.sec,5,100);st.pop=clamp(st.pop,0,100);st.dyn=clamp(st.dyn,-3,3);
+ return {k:e.k,titre:T(e.titre,c,x),txt:T2(pick(e.txt),c,x),pts:pts,rival:rival,rpts:rpts,tone:pts>0?'good':pts<0?'bad':'info'};}
+function choixIA(S,id,rk){
+ var st=S.c[id],o=byId[id].o,duel=S.phase!=='p1';
+ var w={discours:22,promesse:22,livre:9,tele:22,usine:6,repos:10};
+ if(st.fat>80)w.repos*=9;else if(st.fat>62)w.repos*=4;else if(st.fat<25)w.repos*=0.3;
+ if(st.sec<40){w.usine*=0.4;w.discours*=0.7;w.repos*=1.5;}
+ if(st.recent.filter(function(a){return a==='promesse';}).length>=2)w.promesse*=0.3;
+ var lead,trail;
+ if(duel){lead=st.sc>=108;trail=st.sc<=92;}
+ else{var pos=rk.indexOf(id),second=rk.length>1?S.c[rk[1]].sc:0;lead=pos<2;trail=!lead&&second-st.sc>=10;}
+ if(lead){w.promesse*=1.6;w.tele*=1.3;w.repos*=1.4;w.usine*=0.35;w.livre*=0.6;w.discours*=0.8;}
+ if(trail){w.usine*=1.5;w.discours*=1.4;w.livre*=1.3;w.repos*=0.6;if(!duel&&S.turn>=7)w.usine*=1.5;if(duel&&S.turn>=2)w.usine*=1.6;}
+ if(o==='EG'||o==='G'){w.usine*=1.3;w.discours*=1.2;}
+ if(o==='C'){w.tele*=1.3;w.livre*=1.2;}
+ if(o==='D'){w.tele*=1.2;w.promesse*=1.2;}
+ if(o==='ED')w.discours*=1.4;
+ if(o==='SE'){w.livre*=1.3;w.tele*=1.2;}
+ if(!dispo(S,id,'livre'))w.livre=0;if(!dispo(S,id,'usine'))w.usine=0;
+ return wpick(Object.keys(w).map(function(k){return [k,w[k]];}));}
+function notes(S){
+ var st=S.c[S.me],c=byId[S.me],L=[];
+ if(st.fat>=75)L.push("{N} semble épuisé{e} par le rythme de la campagne.");
+ else if(st.fat>=52)L.push("Les traits tirés, {N} enchaîne les cafés. L'équipe s'inquiète un peu.");
+ else if(st.fat<=18)L.push("{N} est en pleine forme et tient à le faire savoir.");
+ if(st.cred<=30)L.push("Les Français semblent de plus en plus sceptiques face à ses déclarations.");
+ else if(st.cred>=70)L.push("Sa parole porte : même ses adversaires le reconnaissent du bout des lèvres.");
+ if(st.sec<=28)L.push("Le service d'ordre est sur les dents : chaque sortie publique l'inquiète.");
+ else if(st.sec<=45)L.push("Les services de sécurité recommandent davantage de prudence.");
+ if(st.dyn>=2)L.push("Un vent favorable souffle sur la campagne.");
+ else if(st.dyn<=-2)L.push("La campagne patine. Au QG, on parle à voix basse.");
+ if(st.pop>=70)L.push("{N} est accueilli{e} comme une véritable vedette.");
+ else if(st.pop<=30)L.push("Sur les marchés, les mains se tendent moins volontiers.");
+ if(S.phase!=='p1'){var ad=S.duel[0]===S.me?S.duel[1]:S.duel[0],sa=S.c[ad];
+  if(sa.fat>=70)L.push(T("On murmure que {N} accuse la fatigue.",byId[ad]));
+  else if(sa.dyn>=2)L.push(T("En face, {N} paraît porté{e} par une bonne dynamique.",byId[ad]));}
+ if(!L.length)L.push("Rien à signaler au QG. Profitez-en, cela ne dure jamais.");
+ return L.map(function(s){return T(s,c);});}
+
+function jouerTour(S,act){
+ if(!dispo(S,S.me,act))return null;
+ var me=S.me,C=byId[me],duel=S.phase!=='p1',ids=vivants(S),before={},raw={},dd={},une=[],brief=[];
+ ids.forEach(function(i){before[i]=raw[i]=S.c[i].sc;dd[i]=0;});
+ var rk=classement(S,ids),rankB=rk.indexOf(me)+1,nB=ids.length;
+ var add=function(id,pts){if(!pts||!S.c[id]||!S.c[id].alive||raw[id]===undefined)return;var u=effet(S,id,pts,raw[id],duel);raw[id]=Math.max(0,raw[id]+u);dd[id]+=u;};
+ var rep={phase:S.phase,turn:S.turn,act:act,before:before[me],rankB:rankB,nB:nB,rivaux:[]};
+ S.stats.acts[act]=(S.stats.acts[act]||0)+1;S.stats.turns++;
+ /* 1. action du joueur */
+ var ra=resoudre(S,me,act),dc=decor(C,act),bloc=VOUS[act][ra.out];
+ rep.out=ra.out;rep.titre=pick(bloc.t);rep.desc=T(pick(bloc.d),C,dc);
+ rep.media=T(pick(REAC[ra.out]),C);rep.mediaNom=pick(MEDIAS);
+ une.push({t:ra.out==='mort'?'dead':'you',s:'Vous : '+T(EUX[act][ra.out],C,dc)});
+ if(ra.out==='mort'){S.c[me].alive=false;S.c[me].out='mort';}
+ else{add(me,ra.pts);if(ra.out==='survie')S.stats.att++;}
+ /* 2. événement du joueur */
+ if(S.c[me].alive&&rnd()<0.10){var ev=tirerEvenement(S,me,ids);add(me,ev.pts);if(ev.rival)add(ev.rival,ev.rpts);rep.ev=ev;S.stats.evts++;une.push({t:ev.tone==='info'?'you':ev.tone,s:'Flash : '+ev.txt});}
+ /* 3. adversaires */
+ if(S.c[me].alive)ids.forEach(function(id){
+  if(id===me||!S.c[id].alive)return;
+  var c=byId[id],a=choixIA(S,id,rk),r=resoudre(S,id,a),line=T(EUX[a][r.out],c,decor(c,a));
+  brief.push(line);
+  if(r.out==='mort'){S.c[id].alive=false;S.c[id].out='mort';raw[id]=0;S.stats.out++;une.push({t:'dead',s:line});rep.rivaux.push(line);return;}
+  if(r.out==='survie'){une.push({t:'bad',s:line});rep.rivaux.push(line);}
+  else if(duel||rk.indexOf(id)<3)rep.rivaux.push(line);
+  add(id,r.pts);
+  if(rnd()<0.10){var e2=tirerEvenement(S,id,ids);add(id,e2.pts);if(e2.rival)add(e2.rival,e2.rpts);une.push({t:'info',s:e2.titre+'. '+e2.txt});if(duel)rep.rivaux.push(e2.txt);}
+ });
+ /* 4. nouveaux sondages */
+ var i;
+ if(!duel){
+  var w={};
+  ids.forEach(function(id){var st=S.c[id];if(st.alive&&raw[id]<=0){st.alive=false;st.out='retrait';if(id!==me){S.stats.out++;une.push({t:'bad',s:T("{N}, tombé{e} à 0 %, retire sa candidature « pour raisons arithmétiques ».",byId[id])});}}
+   if(st.alive)w[id]=raw[id];});
+  var res=Object.keys(w).length?repartir(w,200,1):{};
+  ids.forEach(function(id){S.c[id].prev=before[id];S.c[id].sc=res[id]||0;});
+ }else{
+  var a0=S.duel[0],b0=S.duel[1],A;
+  if(!S.c[a0].alive)A=0;else if(!S.c[b0].alive)A=200;else A=clamp(before[a0]+dd[a0]-dd[b0],0,200);
+  S.c[a0].prev=before[a0];S.c[b0].prev=before[b0];S.c[a0].sc=A;S.c[b0].sc=200-A;
+  [a0,b0].forEach(function(id){if(S.c[id].alive&&S.c[id].sc<=0){S.c[id].alive=false;S.c[id].out='retrait';}});
+ }
+ S.hist[S.phase].push(instantane(S));
+ var rk2=classement(S);rep.after=S.c[me].sc;rep.rankA=S.c[me].alive?rk2.indexOf(me)+1:0;rep.nA=rk2.length;
+ if(S.c[me].alive){S.stats.maxU=Math.max(S.stats.maxU,rep.after);if(!duel)S.stats.bestRank=Math.min(S.stats.bestRank,rep.rankA);}
+ if(rk2.length&&!duel)une.push({t:'info',s:T("Sondage du jour : {N} en tête avec "+fu(S.c[rk2[0]].sc)+".",byId[rk2[0]])});
+ S.news.push({label:PHASE[S.phase]+' : tour '+S.turn+' sur '+NT[S.phase],une:une,brief:brief});
+ rep.notes=S.c[me].alive?notes(S):[];
+ /* 5. suite de la partie */
+ S.g++;
+ var fin=function(type,extra){S.end={type:type};for(var k in (extra||{}))S.end[k]=extra[k];if(!S.fin1)S.fin1=figer(S);rep.next='end';};
+ if(S.c[me].out==='mort')fin('assassinat');
+ else if(S.c[me].out==='retrait')fin('zero');
+ else if(duel){
+  var ad=S.duel[0]===me?S.duel[1]:S.duel[0];
+  if(!S.c[ad].alive)fin('victoire',{forfait:S.c[ad].out,ad:ad});
+  else if(S.turn>=NT.final){var g=classement(S,S.duel)[0];fin(g===me?'victoire':'finale',{ad:ad});}
+  else S.turn++;
+ }else if(S.turn>=NT.p1){
+  S.fin1=figer(S);
+  var top=rk2.slice(0,2);
+  if(top.indexOf(me)<0)fin('premier',{rank:rep.rankA});
+  else{var adv=top[0]===me?top[1]:top[0];
+   rk2.forEach(function(id){if(id!==me&&id!==adv){S.c[id].alive=false;S.c[id].out='elimine';}});
+   CANDS.forEach(function(c){S.c[c.id].sc=0;});
+   S.duel=[me,adv];S.phase='final';S.turn=1;S.c[me].sc=S.c[me].prev=S.c[adv].sc=S.c[adv].prev=100;
+   S.hist.final.push(instantane(S));rep.next='qualif';rep.adv=adv;
+   S.news.push({label:'Résultats du premier tour',une:[{t:'you',s:T("{N} se qualifie pour la finale",C)+T(" face à {N}.",byId[adv])},{t:'info',s:"Les autres candidats sont éliminés. Certains appellent à voter, d'autres à réfléchir."},{t:'info',s:"Les instituts remettent les compteurs à zéro : 50 % partout. Trois tours pour départager les deux finalistes."}],brief:[]});}
+ }else S.turn++;
+ return rep;}
+function figer(S){var L=CANDS.map(function(c){var st=S.c[c.id];return {id:c.id,sc:st.sc,out:st.out,cred:st.cred,tb:st.tb};});
+ L.sort(function(a,b){return b.sc-a.sc||b.cred-a.cred||b.tb-a.tb;});return L.map(function(o){return {id:o.id,sc:o.sc,out:o.out};});}
+
+var API={dispo:dispo,CANDS:CANDS,nouvellePartie:nouvellePartie,jouerTour:jouerTour,scoresDepart:scoresDepart,classement:classement,vivants:vivants,choixIA:choixIA,notes:notes,NT:NT};
+if(typeof document==='undefined'){globalThis.P2K=API;return;}
+
+/* =====================================================================
+   INTERFACE
+   ===================================================================== */
+var KEY='president2000.partie.v2',KSON='president2000.son';
+var S=null,UI={screen:'title',tab:'camp',filter:'all',pick:null,modal:null,son:true};
+function lire(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function ecrire(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function sauver(){if(S)ecrire(KEY,JSON.stringify(S));}
+function charger(){try{var o=JSON.parse(lire(KEY)||'null');if(o&&o.v===2&&byId[o.me]&&CANDS.every(function(c){return o.c[c.id];}))return o;}catch(e){}return null;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m];});}
+
+/* sons */
+var AC=null;
+function seq(notes){if(!UI.son)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();var t=AC.currentTime+0.01;
+ notes.forEach(function(n){var o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=n[0];g.gain.setValueAtTime(0.035,t);g.gain.setValueAtTime(0.0001,t+n[1]*0.9);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+n[1]);t+=n[1];});}catch(e){}}
+var SFX={clic:function(){seq([[660,.04]]);},ok:function(){seq([[523,.08],[659,.08],[784,.14]]);},ko:function(){seq([[330,.1],[247,.1],[196,.2]]);},nul:function(){seq([[440,.08],[440,.1]]);},
+ alarme:function(){seq([[880,.12],[660,.12],[880,.12],[660,.12],[880,.2]]);},evt:function(){seq([[988,.06],[1319,.12]]);},
+ gagne:function(){seq([[523,.1],[523,.1],[523,.1],[698,.3],[659,.12],[698,.45]]);},perdu:function(){seq([[392,.2],[370,.2],[349,.2],[330,.5]]);}};
+
+/* portraits pixel art générés par le jeu */
+var SKIN=['#f2d2b6','#e3b18c','#c68e68','#9a6a48','#6f4a33'],HAIR={n:'#2a2420',b:'#5a3d28',c:'#8a6238',bl:'#d6b25a',r:'#b5552c',g:'#a9a79f',w:'#e8e6de',v:'#b05c9c'};
+function teinte(hex,k){var n=parseInt(hex.slice(1),16),r=Math.min(255,Math.round((n>>16)*k)),g=Math.min(255,Math.round(((n>>8)&255)*k)),b=Math.min(255,Math.round((n&255)*k));return '#'+((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);}
+var PC={};
+function portrait(id){
+ if(PC[id])return PC[id];
+ var c=byId[id],sk=c.p[0],hs=c.p[1],acc=c.p[3],suit=c.p[4],cv=document.createElement('canvas');cv.width=24;cv.height=24;var x=cv.getContext('2d');
+ var R=function(col,a,b,w,h){x.fillStyle=col;x.fillRect(a,b,w,h);};
+ var skin=SKIN[sk],sd=teinte(skin,.8),hair=HAIR[c.p[2]],hd=teinte(hair,.72),ink='#1d1c19',i;
+ R(teinte(ORI[c.o].c,1.3),0,0,24,24);for(i=0;i<24;i+=2)R('rgba(255,255,255,.1)',0,i,24,1);
+ if(hs==='long')R(hair,4,5,16,15);if(hs==='bob')R(hair,4,5,16,10);if(hs==='curly')R(hair,4,4,16,8);
+ R(suit,3,20,18,4);R(suit,5,19,14,1);R(teinte(suit,.78),3,23,18,1);
+ R(sd,10,17,4,3);R('#f1efe6',10,19,4,2);
+ if(acc.indexOf('t')>=0)R('#8e2f2f',11,19,2,5);
+ if(acc.indexOf('f')>=0){R('#b23a3a',8,18,8,2);R('#b23a3a',13,20,2,3);}
+ R(skin,7,5,10,13);R(skin,6,7,12,9);R(sd,7,17,10,1);R(sd,5,10,1,3);R(sd,18,10,1,3);
+ if(hs==='short'){R(hair,7,4,10,2);R(hair,6,5,1,4);R(hair,17,5,1,4);R(hair,8,3,8,1);}
+ if(hs==='side'){R(hair,7,3,10,3);R(hair,6,5,2,3);R(hair,17,5,1,3);R(hd,13,3,1,3);}
+ if(hs==='bald'){R(hair,6,8,1,3);R(hair,17,8,1,3);R('rgba(255,255,255,.35)',9,6,2,1);}
+ if(hs==='long'){R(hair,6,3,12,3);R(hair,5,5,2,6);R(hair,17,5,2,6);R(hair,7,6,3,1);}
+ if(hs==='bob'){R(hair,6,3,12,3);R(hair,5,5,2,7);R(hair,17,5,2,7);R(hair,7,6,10,1);}
+ if(hs==='bun'){R(hair,7,4,10,2);R(hair,6,5,1,5);R(hair,17,5,1,5);R(hair,10,1,4,3);R(hd,10,3,4,1);}
+ if(hs==='curly'){R(hair,6,3,12,3);R(hair,5,4,2,5);R(hair,17,4,2,5);R(hair,8,2,2,1);R(hair,12,2,3,1);R(hd,7,4,1,1);R(hd,11,3,1,1);R(hd,15,4,1,1);}
+ if(hs==='crest'){R(hair,10,1,4,5);R(hd,6,6,1,3);R(hd,17,6,1,3);}
+ R('#fbfaf4',8,10,3,2);R('#fbfaf4',13,10,3,2);R(ink,9,10,1,2);R(ink,14,10,1,2);
+ R(hd,8,8,3,1);R(hd,13,8,3,1);R(sd,11,12,2,2);
+ R(c.g==='f'?'#b24a48':'#8a3b36',10,15,4,1);
+ if(acc.indexOf('b')>=0){R(hair,7,14,10,4);R(hair,6,13,1,3);R(hair,17,13,1,3);R('#8a3b36',10,15,4,1);}
+ if(acc.indexOf('m')>=0)R(hair,9,14,6,1);
+ if(acc.indexOf('g')>=0){R(ink,7,9,10,1);R(ink,7,12,4,1);R(ink,13,12,4,1);R(ink,7,9,1,4);R(ink,16,9,1,4);R(ink,11,9,2,2);}
+ if(acc.indexOf('h')>=0){R('#2b2a33',6,2,12,3);R('#2b2a33',5,4,3,1);R('#2b2a33',11,1,2,1);}
+ if(acc.indexOf('c')>=0){R('#8e3a34',6,3,12,3);R(teinte('#8e3a34',.7),5,6,9,1);}
+ if(acc.indexOf('e')>=0){R('#e6c04a',5,13,1,1);R('#e6c04a',18,13,1,1);}
+ if(acc.indexOf('k')>=0){R(hair,6,1,3,3);R(hair,15,1,3,3);R('#e9a1b0',7,2,1,1);R('#e9a1b0',16,2,1,1);}
+ if(acc.indexOf('s')>=0){R('#f1efe6',6,6,12,1);R('#b23a3a',6,7,12,1);}
+ return (PC[id]=cv.toDataURL());}
+function pt(id,size){return '<img class="pt" src="'+portrait(id)+'" width="'+size+'" height="'+size+'" alt="Portrait dessiné de '+esc(byId[id].nom)+'">';}
+function ori(o){return '<span class="ori" style="background:'+ORI[o].c+'">'+ORI[o].n+'</span>';}
+
+/* icônes pixel art */
+var BMP={
+ discours:["....####....","...######...","...######...","...######...","...######...",".#.######.#.",".#..####..#.",".##......##.","..########..",".....##.....",".....##.....","...######..."],
+ promesse:["............",".........##.",".......####.",".....######.",".##########.",".##########.",".##########.",".....######.","..##...####.","..##.....##.","..##........","............"],
+ livre:["............",".#####.#####",".#...###...#",".#.#..#.##.#",".#....#....#",".#.##.#.##.#",".#....#....#",".#.#..#.#..#",".#....#....#",".#####.#####","......#.....","............"],
+ tele:["..#......#..","...#....#...","....#..#....","############","#..........#","#.########.#","#.########.#","#.########.#","#.########.#","#..........#","############","..##....##.."],
+ usine:[".........##.",".........##.","..........#.",".##.......##",".##..#..#.##",".##.##.##.##",".###########",".###########",".#.#.#.#.#.#",".###########",".#.#.#.#.#.#",".###########"],
+ repos:["....###.....","..####......",".####.....##",".###.......#","####......#.","####......##","####........",".####....#..",".#####..##..","..########..","....####....","............"],
+ bars:["............",".........##.",".........##.","......##.##.","......##.##.","...##.##.##.","...##.##.##.",".#.##.##.##.",".#.##.##.##.",".#.##.##.##.",".###########","............"],
+ dice:["............",".##########.",".#........#.",".#.##..##.#.",".#.##..##.#.",".#........#.",".#........#.",".#.##..##.#.",".#.##..##.#.",".#........#.",".##########.","............"],
+ equal:["............","............","............",".##########.",".##########.","............","............",".##########.",".##########.","............","............","............"]
+};
+function ico(k){var d='';BMP[k].forEach(function(row,y){for(var x=0;x<row.length;x++)if(row[x]==='#')d+='M'+x+' '+y+'h1v1h-1z';});
+ return '<svg viewBox="0 0 12 12" shape-rendering="crispEdges" aria-hidden="true"><path fill="currentColor" d="'+d+'"/></svg>';}
+
+/* ---------- écrans ---------- */
+function haut(){
+ var info='';
+ if(UI.screen==='game'&&S)info='<div class="top-info">'+PHASE[S.phase].toUpperCase()+' · TOUR '+S.turn+'/'+NT[S.phase]+' · '+fu(S.c[S.me].sc)+'</div>';
+ return '<header class="top win"><div class="brand"><i></i>PRÉSIDENT <b>2000</b></div>'+info+
+ '<nav><button class="btn" data-a="help">Aide</button><button class="btn" data-a="son" aria-pressed="'+UI.son+'">Son : '+(UI.son?'oui':'non')+'</button>'+
+ (UI.screen!=='title'?'<button class="btn" data-a="menu">Menu</button>':'')+'</nav></header>';}
+function ecranTitre(){
+ var sv=charger(),ok=sv&&!sv.end,ids=CANDS.map(function(c){return c.id;}).sort(function(){return rnd()-.5;}).slice(0,9);
+ return '<main class="win hero"><div class="tb">Élection présidentielle : programme principal</div><div class="wb">'+
+ '<div class="parade">'+ids.map(function(i){return pt(i,48);}).join('')+'</div>'+
+ '<h1>PRÉSIDENT <b>2000</b></h1><p class="sub">Le simulateur de campagne garanti sans programme chiffré</p>'+
+ '<div class="menu"><button class="btn go" data-a="new">Nouvelle élection</button>'+
+ '<button class="btn" data-a="resume"'+(ok?'':' disabled')+'>Reprendre la partie'+(ok?'<br><small>'+esc(byId[sv.me].nom)+', '+PHASE[sv.phase].toLowerCase()+', tour '+sv.turn+'</small>':'')+'</button>'+
+ '<button class="btn" data-a="help">Comment jouer</button></div>'+
+ '<p class="fine">Fiction satirique. Candidats, partis, médias et sondages sont inventés ; toute ressemblance avec des personnes réelles serait fortuite.</p></div>'+
+ '<div class="ticker crt"><span>DERNIÈRE MINUTE : un candidat surpris en train de lire son propre programme +++ SONDAGE : 62 % des Français « attendent de voir » +++ MÉTÉO ÉLECTORALE : promesses abondantes sur tout le pays, éclaircies improbables +++ Le débat de mercredi est reporté, faute de sujet consensuel +++ Un rond-point de la Nièvre réclame un temps de parole +++</span></div></main>';}
+function ecranChoix(){
+ var L=CANDS.slice().sort(function(a,b){return ORDRE.indexOf(a.o)-ORDRE.indexOf(b.o);}).filter(function(c){return UI.filter==='all'||c.o===UI.filter;});
+ return '<main class="win"><div class="tb">Étape 1 sur 2 : choisissez votre candidat</div><div class="wb">'+
+ '<div class="chips" role="group" aria-label="Filtrer par orientation"><button class="chip" data-a="filter" data-k="all" aria-pressed="'+(UI.filter==='all')+'">Tous ('+CANDS.length+')</button>'+
+ ORDRE.map(function(o){return '<button class="chip" data-a="filter" data-k="'+o+'" aria-pressed="'+(UI.filter===o)+'">'+ORI[o].n+'</button>';}).join('')+'</div>'+
+ '<div class="gallery">'+L.map(function(c){return '<article class="cc inset"><div class="cc-h">'+pt(c.id,72)+'<div><h3>'+esc(c.nom)+'</h3><p class="party">'+esc(c.parti)+'</p>'+ori(c.o)+'</div></div><p class="bio">'+esc(c.bio)+'</p><button class="btn" data-a="pick" data-k="'+c.id+'">Incarner '+esc(c.nom.split(' ')[0])+'</button></article>';}).join('')+'</div>'+
+ '<p class="fine">Les orientations sont des catégories simplifiées pour le jeu. Tous ces candidats sont imaginaires.</p></div></main>';}
+function ecranMode(){
+ var c=byId[UI.pick];
+ return '<main class="win"><div class="tb">Étape 2 sur 2 : choisissez les sondages de départ</div><div class="wb">'+
+ '<div class="picked">'+pt(c.id,56)+'<div><b>'+esc(c.nom)+'</b><br><span class="fine">'+esc(c.parti)+'</span></div><button class="btn" data-a="new" style="margin-left:auto">Changer</button></div>'+
+ '<div class="modes">'+Object.keys(MODES).map(function(k){var m=MODES[k];return '<button class="mode inset" data-a="mode" data-k="'+k+'">'+ico(m.ico)+'<h3>'+m.t+'</h3><span>'+esc(m.d)+'</span><span class="btnlike">Lancer la campagne ▸</span></button>';}).join('')+'</div></div></main>';}
+function delta(st){var d=st.sc-st.prev;return '<span class="dl '+(d>0?'up':d<0?'dn':'eq')+'">'+(d>0?'▲ ':d<0?'▼ ':'● ')+fd(d)+'</span>';}
+function serieIds(){if(S.phase!=='p1')return S.duel.slice();var rk=classement(S),a=rk.slice(0,5);if(a.indexOf(S.me)<0)a.push(S.me);return a;}
+var COULS=['#5fd0d0','#ff8f6b','#9be37a','#c79bff','#f5a3d0','#8ab4ff'];
+function couleurs(ids){var o={},k=0;ids.forEach(function(id){o[id]=id===S.me?'#ffe066':COULS[k++%COULS.length];});return o;}
+function blocSondages(){
+ var h='',rk=classement(S),ids=serieIds(),col=couleurs(ids);
+ h+='<section class="win"><div class="tb">Évolution des sondages : '+PHASE[S.phase].toLowerCase()+'</div><div class="wb"><div class="crt chartbox"><canvas id="chart" role="img" aria-label="Courbes des intentions de vote par tour"></canvas></div>'+
+ '<div class="legend">'+ids.map(function(id){return '<span><i style="background:'+col[id]+'"></i>'+esc(byId[id].nom)+(id===S.me?' (vous)':'')+'</span>';}).join('')+'</div></div></section>';
+ h+='<section class="win"><div class="tb">Intentions de vote</div><div class="wb">';
+ if(S.phase!=='p1'){var a=S.me,b=S.duel[0]===a?S.duel[1]:S.duel[0];
+  h+='<div class="inset duel"><div class="side">'+pt(a,56)+'<b>'+fu(S.c[a].sc)+'</b>'+esc(byId[a].nom)+' (vous)'+delta(S.c[a])+'</div><div class="vs">VS</div><div class="side">'+pt(b,56)+'<b>'+fu(S.c[b].sc)+'</b>'+esc(byId[b].nom)+delta(S.c[b])+'</div></div>'+
+  '<div class="bar2"><i style="width:'+S.c[a].sc/2+'%"></i><u></u></div>';
+  if(S.fin1)h+='<details><summary><b>Résultats du premier tour</b></summary><div class="inset rows">'+S.fin1.map(function(o,i){return ligne(o.id,i+1,o.sc,null,o.out==='mort'||o.out==='retrait'?o.out:null);}).join('')+'</div></details>';
+ }else{
+  h+='<div class="inset rows">'+rk.map(function(id,i){return ligne(id,i+1,S.c[id].sc,S.c[id],null);}).join('')+
+  CANDS.filter(function(c){return !S.c[c.id].alive;}).map(function(c){return ligne(c.id,0,0,null,S.c[c.id].out);}).join('')+'</div>';
+ }
+ h+='<p class="src">'+MODES[S.mode].src+'</p></div></section>';
+ return h;}
+function ligne(id,rang,sc,st,out){var c=byId[id];
+ return '<div class="row'+(id===S.me?' me':'')+(out?' out':'')+'"><span class="rk">'+(out?'–':rang)+'</span>'+pt(id,24)+'<span class="nm">'+esc(c.nom)+(id===S.me?' (vous)':'')+'<small>'+ORI[c.o].n+'</small></span>'+
+ '<span class="sc">'+(out?(out==='mort'?'décédé'+(c.g==='f'?'e':''):'retrait'):fu(sc))+'</span>'+(st?delta(st):'<span></span>')+'</div>';}
+function blocActus(){
+ return '<section class="win"><div class="tb">Journal de campagne</div><div class="inset news">'+S.news.slice().reverse().map(function(n){
+  return '<div class="nw"><h4>'+esc(n.label)+'</h4><ul>'+n.une.map(function(u){return '<li class="'+u.t+'">'+esc(u.s)+'</li>';}).join('')+'</ul>'+
+  (n.brief.length?'<details><summary>Toutes les brèves des adversaires ('+n.brief.length+')</summary><ul>'+n.brief.map(function(b){return '<li>'+esc(b)+'</li>';}).join('')+'</ul></details>':'')+'</div>';}).join('')+'</div></section>';}
+function ecranJeu(){
+ var c=byId[S.me],st=S.c[S.me],rk=classement(S),rang=rk.indexOf(S.me)+1;
+ var h='<main id="game" data-tab="'+UI.tab+'"><div class="col" data-tab="camp">';
+ h+='<section class="win"><div class="tb">Votre candidat</div><div class="wb"><div class="cand-row">'+pt(c.id,88)+'<div><h2>'+esc(c.nom)+'</h2><p>'+esc(c.parti)+'</p>'+ori(c.o)+'</div></div>'+
+ '<div class="kpis"><div class="crt kpi"><small>SONDAGES</small><b>'+fu(st.sc)+'</b></div><div class="crt kpi"><small>CLASSEMENT</small><b>'+ord(rang,c.g==='f')+' / '+rk.length+'</b></div><div class="crt kpi"><small>'+PHASE[S.phase].toUpperCase()+'</small><b>'+S.turn+' / '+NT[S.phase]+'</b></div></div></div></section>';
+ h+='<section class="win"><div class="tb">Notes de votre directeur de campagne</div><ul class="inset notes">'+notes(S).map(function(n){return '<li>'+esc(n)+'</li>';}).join('')+'</ul></section>';
+ h+='<section class="win"><div class="tb">Tour '+S.turn+' : que faites-vous ?</div><div class="wb"><div class="acts">'+ACTIONS.map(function(a){var ok=dispo(S,S.me,a.k),n=attente(S,S.me),why=a.k==='livre'?"Déjà publié : un seul livre par campagne.":"Visite trop récente : de nouveau possible dans "+n+" tour"+(n>1?'s':'')+".";
+  return '<button class="act" data-a="act" data-k="'+a.k+'"'+(ok?'':' disabled')+'>'+ico(a.k)+'<span><b>'+a.t+'</b><em>'+esc(ok?a.d:why)+'</em></span></button>';}).join('')+'</div></div></section>';
+ h+='</div><div class="col" data-tab="sond">'+blocSondages()+'</div><div class="col" data-tab="actu">'+blocActus()+'</div></main>';
+ h+='<nav class="tabs" aria-label="Sections">'+[['camp','Campagne'],['sond','Sondages'],['actu','Journal']].map(function(t){return '<button data-a="tab" data-k="'+t[0]+'" aria-pressed="'+(UI.tab===t[0])+'">'+t[1]+'</button>';}).join('')+'</nav>';
+ return h;}
+var FINS={
+ victoire:function(c,e){return {t:(c.g==='f'?'ÉLUE':'ÉLU')+' À LA PRÉSIDENCE',alert:false,d:e.forfait?(e.forfait==='mort'?T("{N} n'est plus là pour vous affronter. Faute d'adversaire, le Conseil constitutionnel vous proclame vainqueur, un peu gêné.",byId[e.ad]):T("{N}, tombé{e} à 0 %, jette l'éponge. Vous gagnez par forfait : ce n'est pas glorieux, mais c'est réglementaire.",byId[e.ad])):T("Les Français ont tranché : {N} entre à l'Élysée. Il ne vous reste plus qu'à tenir vos promesses. Bon courage.",c)};},
+ finale:function(c,e){return {t:'DÉFAITE EN FINALE',alert:true,d:T("{N} l'emporte en finale. ",byId[e.ad])+"Vous promettez de « rester au service du pays », c'est-à-dire d'écrire un livre."};},
+ premier:function(c,e){return {t:'ÉLIMINATION AU PREMIER TOUR',alert:true,d:T("{N} termine "+ord(e.rank,c.g==='f')+" et ne se qualifie pas pour la finale. Vous appelez vos électeurs à « prendre leurs responsabilités », sans préciser lesquelles.",c)};},
+ assassinat:function(c){return {t:'CAMPAGNE INTERROMPUE',alert:true,d:T("{N} n'a pas survécu à l'attentat. Le pays observe une minute de silence, puis la campagne reprend sans vous.",c)};},
+ zero:function(c){return {t:'ZÉRO POUR CENT',alert:true,d:T("{N} n'a plus aucun électeur déclaré, pas même dans son entourage. La candidature est retirée « pour raisons arithmétiques ».",c)};}
+};
+function ecranFin(){
+ var c=byId[S.me],e=S.end,f=FINS[e.type](c,e),st=S.stats;
+ var acts=ACTIONS.filter(function(a){return st.acts[a.k];}).map(function(a){return a.t.toLowerCase()+' × '+st.acts[a.k];}).join(', ')||'aucune';
+ var h='<main class="win"><div class="tb'+(f.alert?' alert':'')+'">Fin de la partie</div><div class="wb"><div class="endhead">'+pt(c.id,96)+'<div><h2>'+f.t+'</h2><p>'+esc(f.d)+'</p></div></div><div class="endgrid">';
+ h+='<section><div class="tb">Votre campagne en chiffres</div><dl class="inset recap"><dt>Candidat</dt><dd>'+esc(c.nom)+', '+esc(c.parti)+'</dd><dt>Sondages de départ</dt><dd>'+MODES[S.mode].t+'</dd><dt>Tours joués</dt><dd>'+st.turns+'</dd><dt>Score de départ</dt><dd>'+fu(st.start)+'</dd><dt>Meilleur score</dt><dd>'+fu(st.maxU)+'</dd><dt>Meilleur classement</dt><dd>'+ord(st.bestRank,c.g==='f')+' (premier tour)</dd><dt>Actions</dt><dd>'+esc(acts)+'</dd><dt>Événements subis</dt><dd>'+st.evts+'</dd><dt>Attentats auxquels vous avez survécu</dt><dd>'+st.att+'</dd><dt>Concurrents disparus ou retirés</dt><dd>'+st.out+'</dd></dl>';
+ if(S.duel)h+='<div class="inset duel" style="margin-top:10px"><div class="side">'+pt(S.duel[0],48)+'<b>'+fu(S.c[S.duel[0]].sc)+'</b>'+esc(byId[S.duel[0]].nom)+'</div><div class="vs">VS</div><div class="side">'+pt(S.duel[1],48)+'<b>'+fu(S.c[S.duel[1]].sc)+'</b>'+esc(byId[S.duel[1]].nom)+'</div></div>';
+ h+='</section><section><div class="tb">'+(S.duel||e.type==='premier'?'Résultats du premier tour':'Classement au moment de l\'arrêt')+'</div><div class="inset rows" style="max-height:380px">'+(S.fin1||[]).map(function(o,i){return ligne(o.id,i+1,o.sc,null,o.out==='mort'||o.out==='retrait'?o.out:null);}).join('')+'</div></section>';
+ h+='</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn go" data-a="new" style="min-height:50px;font-size:16px">Nouvelle partie</button><button class="btn" data-a="menu">Retour au menu</button></div></div></main>';
+ return h;}
+function modale(){
+ var m=UI.modal;if(!m)return '';
+ var h='',cls='modal win',ovl='ovl';
+ if(m.type==='help'){
+  h='<div class="tb">Comment jouer</div><div class="wb"><ul class="help inset" style="padding:8px 10px">'+
+  ["Votre but : devenir président de la République, ou au moins essayer.","La campagne dure 9 tours. À chaque tour, vous choisissez une action ; vos adversaires en font autant, et l'imprévu s'invite quand il veut.","Après le neuvième tour, seuls les deux candidats en tête restent en lice. Ils repartent à 50 % chacun pour une finale en 3 tours : celui qui mène à la fin devient président.","Un candidat ne peut écrire qu'un seul livre par campagne, et ne peut visiter une usine qu'une fois tous les trois tours.","Vous ne voyez que les sondages. Les risques, les chances de réussite et l'état réel de votre candidat restent cachés : lisez les notes de votre directeur de campagne et le journal pour deviner le reste.","La partie s'arrête si votre score tombe à 0 % ou si votre candidat ne survit pas à la campagne.","La partie est sauvegardée automatiquement dans ce navigateur. Utilisez « Reprendre la partie » depuis le menu."].map(function(s){return '<li>'+s+'</li>';}).join('')+
+  '</ul><p class="fine">Tout est inventé : candidats, partis, médias, instituts et scandales.</p></div><div class="foot"><button class="btn go" data-a="close">Compris</button></div>';
+ }else if(m.type==='result'){
+  var r=m.rep,grave=r.out==='mort'||r.out==='survie',d=r.after-r.before,pos=r.out==='ok'||r.out==='survie',neg=r.out==='ko';
+  if(grave){cls+=' shake';ovl+=' flash';}
+  var c=byId[S.me],note='';
+  if(r.out!=='mort'){
+   if(pos&&d<0&&!r.ev)note="Malgré cela, vos concurrents ont fait encore mieux ce tour-ci.";
+   else if(neg&&d>0&&!r.ev)note="Par chance, vos concurrents ont trébuché plus fort que vous.";
+   else if(r.out==='repos'&&d!==0)note=d<0?"Pendant votre absence, vos adversaires ont occupé le terrain.":"Vos adversaires se sont chargés de baisser tout seuls.";}
+  h='<div class="tb'+(grave||neg?' alert':'')+'">'+PHASE[r.phase]+', tour '+r.turn+' : '+ACTNOM[r.act].toLowerCase()+'</div><div class="wb">'+
+  '<h3>'+esc(r.titre)+'</h3><p>'+esc(r.desc)+'</p>'+
+  '<div class="inset blk"><h4>Réaction des médias</h4><p class="quote">« '+esc(r.media)+' »</p><p class="fine">'+esc(r.mediaNom)+'</p></div>';
+  if(r.ev)h+='<div class="inset blk flashinfo"><h4>Flash info : '+esc(r.ev.titre)+'</h4><p>'+esc(r.ev.txt)+'</p></div>';
+  if(r.out!=='mort'){
+   h+='<div class="crt evo"><div><small>VOTRE SCORE</small><span class="big">'+fu(r.before)+' ▸ <span id="tick" data-from="'+r.before+'" data-to="'+r.after+'">'+fu(r.before)+'</span></span></div>'+
+   '<div><small>ÉVOLUTION</small><span class="big">'+(d>0?'▲ ':d<0?'▼ ':'')+fd(d)+'</span></div>'+
+   (r.phase==='p1'&&r.rankA?'<div><small>CLASSEMENT</small><span class="big">'+ord(r.rankB,c.g==='f')+' ▸ '+ord(r.rankA,c.g==='f')+'</span></div>':'')+'</div>';
+   if(note)h+='<p class="fine">'+note+'</p>';
+   if(r.rivaux.length)h+='<div class="inset blk"><h4>Pendant ce temps</h4><ul>'+r.rivaux.slice(0,5).map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ul></div>';
+  }
+  h+='</div><div class="foot"><button class="btn go" data-a="next">Continuer ▸</button></div>';
+ }else if(m.type==='qualif'){
+  var a=byId[S.duel[0]],b=byId[S.duel[1]];
+  h='<div class="tb">Résultats du premier tour</div><div class="wb"><h3>'+(a.g==='f'?'QUALIFIÉE':'QUALIFIÉ')+' POUR LA FINALE</h3>'+
+  '<div class="vsrow inset" style="padding:12px"><div>'+pt(a.id,72)+esc(a.nom)+'</div><span>VS</span><div>'+pt(b.id,72)+esc(b.nom)+'</div></div>'+
+  '<p>'+esc(T("Vous affronterez {N}. ",b))+'Les compteurs repartent à 50 % chacun. Il reste trois tours : le candidat en tête à la fin devient président. Votre forme, votre crédit et votre élan vous suivent dans la finale.</p></div><div class="foot"><button class="btn go" data-a="close">Aux urnes ▸</button></div>';
+ }
+ return '<div class="'+ovl+'" role="dialog" aria-modal="true"><div class="'+cls+'">'+h+'</div></div>';}
+
+function rendre(){
+ var app=document.getElementById('app'),h=haut();
+ if(UI.screen==='title')h+=ecranTitre();
+ else if(UI.screen==='select')h+=ecranChoix();
+ else if(UI.screen==='mode')h+=ecranMode();
+ else if(UI.screen==='game')h+=ecranJeu();
+ else if(UI.screen==='end')h+=ecranFin();
+ h+=modale();
+ app.innerHTML=h;
+ dessiner();
+ var tk=document.getElementById('tick');if(tk)compter(tk);
+ var mb=document.querySelector('.modal .go');if(mb)mb.focus();}
+function compter(el){
+ var a=+el.dataset.from,b=+el.dataset.to;
+ if(a===b||(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)){el.textContent=fu(b);return;}
+ var pas=Math.max(1,Math.ceil(Math.abs(b-a)/24)),cur=a,tm=setInterval(function(){
+  cur+=b>a?pas:-pas;if((b>a&&cur>=b)||(b<a&&cur<=b)){cur=b;clearInterval(tm);}
+  if(!el.isConnected){clearInterval(tm);return;}el.textContent=fu(cur);},45);}
+function dessiner(){
+ var cv=document.getElementById('chart');if(!cv||!S)return;
+ var W=cv.clientWidth,H=cv.clientHeight;if(!W)return;
+ var dpr=window.devicePixelRatio||1;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+ var x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,W,H);
+ var hist=S.hist[S.phase],ids=serieIds(),col=couleurs(ids),n=NT[S.phase],duel=S.phase!=='p1';
+ var mx=0;hist.forEach(function(h){ids.forEach(function(id){mx=Math.max(mx,h[id]/2);});});
+ var ymax=duel?100:Math.max(10,Math.ceil((mx+1)/5)*5),L=44,Rr=12,Tt=10,B=30,pw=W-L-Rr,ph=H-Tt-B;
+ var X=function(i){return Math.round(L+pw*i/n);},Y=function(v){return Math.round(Tt+ph*(1-v/ymax));};
+ x.font='16px VT323, monospace';x.textBaseline='middle';
+ var step=ymax<=20?5:ymax<=50?10:25,v,i;
+ for(v=0;v<=ymax;v+=step){x.fillStyle='#1e3a2a';x.fillRect(L,Y(v),pw,1);x.fillStyle='#7fb48a';x.textAlign='right';x.fillText(v+' %',L-5,Y(v));}
+ x.textAlign='center';x.textBaseline='top';
+ for(i=0;i<=n;i++){x.fillStyle='#1e3a2a';x.fillRect(X(i),Tt,1,ph);x.fillStyle='#7fb48a';x.fillText(i===0?(W<420?'D':'Dép.'):'T'+i,X(i),H-B+11);}
+ ids.slice().reverse().forEach(function(id){
+  var me=id===S.me,lw=me?3:2;x.strokeStyle=col[id];x.fillStyle=col[id];x.lineWidth=lw;x.lineJoin='miter';x.beginPath();
+  hist.forEach(function(h,k){var px=X(k),py=Y(h[id]/2);if(k)x.lineTo(px,py);else x.moveTo(px,py);});x.stroke();
+  hist.forEach(function(h,k){var s=me?7:5,last=k===hist.length-1;if(last)s+=2;x.fillRect(X(k)-Math.floor(s/2),Y(h[id]/2)-Math.floor(s/2),s,s);});
+ });}
+
+function ouvrirResultat(rep){
+ UI.modal={type:'result',rep:rep};
+ if(rep.out==='mort'||rep.out==='survie')SFX.alarme();else if(rep.ev)SFX.evt();else if(rep.out==='ok')SFX.ok();else if(rep.out==='ko')SFX.ko();else SFX.nul();}
+document.addEventListener('click',function(ev){
+ var b=ev.target.closest('[data-a]');if(!b||b.disabled)return;
+ var a=b.dataset.a,k=b.dataset.k;
+ if(a==='son'){UI.son=!UI.son;ecrire(KSON,UI.son?'1':'0');SFX.clic();}
+ else if(a==='help'){UI.modal={type:'help'};SFX.clic();}
+ else if(a==='close'){UI.modal=null;SFX.clic();}
+ else if(a==='menu'){UI.screen='title';UI.modal=null;SFX.clic();}
+ else if(a==='new'){UI.screen='select';UI.modal=null;UI.pick=null;SFX.clic();window.scrollTo(0,0);}
+ else if(a==='resume'){var sv=charger();if(sv){S=sv;UI.screen=S.end?'end':'game';UI.tab='camp';}SFX.clic();}
+ else if(a==='filter'){UI.filter=k;SFX.clic();}
+ else if(a==='pick'){UI.pick=k;UI.screen='mode';SFX.clic();window.scrollTo(0,0);}
+ else if(a==='mode'){S=nouvellePartie(UI.pick,k);sauver();UI.screen='game';UI.tab='camp';SFX.ok();window.scrollTo(0,0);}
+ else if(a==='tab'){UI.tab=k;SFX.clic();window.scrollTo(0,0);}
+ else if(a==='act'){if(!S||S.end||UI.modal)return;var rep=jouerTour(S,k);if(!rep)return;sauver();ouvrirResultat(rep);}
+ else if(a==='next'){var r=UI.modal.rep;UI.modal=null;
+  if(r.next==='end'){UI.screen='end';if(S.end.type==='victoire')SFX.gagne();else SFX.perdu();window.scrollTo(0,0);}
+  else if(r.next==='qualif'){UI.modal={type:'qualif'};SFX.gagne();}
+  else SFX.clic();}
+ rendre();});
+document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&UI.modal&&(UI.modal.type==='help'||UI.modal.type==='qualif')){UI.modal=null;rendre();}});
+var rz;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(dessiner,120);});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(dessiner);
+
+function demarrer(data){
+ UI.son=lire(KSON)!=='0';
+ if(data&&data.S&&data.S.v===2&&byId[data.S.me]){S=data.S;UI.screen=data.screen||'title';UI.tab=data.tab||'camp';UI.pick=data.pick||null;if((UI.screen==='game'||UI.screen==='end')&&!S)UI.screen='title';if(UI.screen==='mode'&&!UI.pick)UI.screen='select';}
+ rendre();}
+var hot=window.claude&&window.claude.hot;
+if(hot&&hot.snapshot)hot.snapshot(function(){return {S:S,screen:UI.screen,tab:UI.tab,pick:UI.pick};});
+if(hot&&hot.ready)hot.ready(demarrer);else demarrer((hot&&hot.data)||{});
+})();
+</script>
+</body>
+</html>
